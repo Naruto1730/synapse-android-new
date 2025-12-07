@@ -59,10 +59,15 @@ fun HomeNavGraph(
 
         // Placeholders for destinations managed outside this graph or to be implemented
         composable(HomeDestinations.PostDetail.route) { backStackEntry ->
-             // PostDetailScreen(postId = backStackEntry.arguments?.getString("postId"))
+             val postId = backStackEntry.arguments?.getString("postId")
+             com.synapse.social.studioasinc.ui.home.PostDetailScreen(
+                 postId = postId,
+                 onBackClick = { navController.popBackStack() }
+             )
         }
 
         composable(HomeDestinations.Profile.route) { backStackEntry ->
+             // ProfileScreen is separate migration but we can log or show placeholder
              // ProfileScreen(userId = backStackEntry.arguments?.getString("userId"))
         }
     }

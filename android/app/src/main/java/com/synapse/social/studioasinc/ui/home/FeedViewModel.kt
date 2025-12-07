@@ -45,7 +45,7 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
     fun likePost(post: Post) {
         viewModelScope.launch {
              try {
-                 val currentUserId = authRepository.getCurrentUser()?.id
+                 val currentUserId = authRepository.getCurrentUserId()
                  if (currentUserId != null) {
                     postRepository.toggleReaction(post.id, currentUserId, com.synapse.social.studioasinc.model.ReactionType.LIKE)
                  }
@@ -57,7 +57,21 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun bookmarkPost(post: Post) {
-        // Implement bookmark logic
+        viewModelScope.launch {
+            try {
+                // Using direct Supabase client call for bookmarks as fallback
+                val client = com.synapse.social.studioasinc.SupabaseClient.client
+                val currentUserId = authRepository.getCurrentUserId()
+                if (currentUserId != null) {
+                    client.from("bookmarks").insert(mapOf(
+                        "user_id" to currentUserId,
+                        "post_id" to post.id
+                    ))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun refresh() {

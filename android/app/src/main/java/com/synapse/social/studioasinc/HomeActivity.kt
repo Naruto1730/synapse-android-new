@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
+import io.github.jan.supabase.gotrue.auth
 import com.synapse.social.studioasinc.ui.auth.components.ProfileCompletionDialogFragment
 import com.synapse.social.studioasinc.ui.home.HomeScreen
 import com.synapse.social.studioasinc.ui.theme.SynapseTheme
@@ -24,10 +25,19 @@ class HomeActivity : BaseActivity() {
                         startActivity(Intent(this, SearchActivity::class.java))
                     },
                     onNavigateToProfile = { userId ->
-                        val intent = Intent(this, ProfileComposeActivity::class.java).apply {
-                            putExtra("uid", userId)
+                        val targetUid = if (userId == "me") SupabaseClient.client.auth.currentUserOrNull()?.id else userId
+                        if (targetUid != null) {
+                            val intent = Intent(this, ProfileComposeActivity::class.java).apply {
+                                putExtra("uid", targetUid)
+                            }
+                            startActivity(intent)
                         }
-                        startActivity(intent)
+                    },
+                    onNavigateToInbox = {
+                        startActivity(Intent(this, InboxActivity::class.java))
+                    },
+                    onNavigateToCreatePost = {
+                        startActivity(Intent(this, CreatePostActivity::class.java))
                     }
                 )
             }

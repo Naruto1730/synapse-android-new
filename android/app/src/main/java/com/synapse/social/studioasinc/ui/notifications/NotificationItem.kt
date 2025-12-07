@@ -80,7 +80,7 @@ fun NotificationItem(
              androidx.compose.foundation.layout.Box(
                 modifier = Modifier
                     .size(8.dp)
-                    .androidx.compose.foundation.background(MaterialTheme.colorScheme.primary, androidx.compose.foundation.shape.CircleShape)
+                    .background(MaterialTheme.colorScheme.primary, androidx.compose.foundation.shape.CircleShape)
             )
         }
     }

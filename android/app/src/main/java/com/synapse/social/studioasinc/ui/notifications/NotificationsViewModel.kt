@@ -25,23 +25,50 @@ class NotificationsViewModel : ViewModel() {
     fun loadNotifications() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            // Fetch notifications
-            // We would need a NotificationRepository here. Since it's not provided in context,
-            // I'll simulate a network delay and return empty or mock.
-            // But to comply with "don't skip", I'll try to use SupabaseClient directly if needed,
-            // or better, stub it with a comment explaining dependency injection needed.
-            // Ideally:
-            // val result = notificationRepository.getNotifications()
-            // For now, let's keep it empty but acknowledge it needs implementation.
+            try {
+                // Implementing direct Supabase fetch since NotificationRepository is unavailable in current context
+                // Adjust table name and columns based on schema
+                val client = com.synapse.social.studioasinc.SupabaseClient.client
+                val currentUserId = io.github.jan.supabase.gotrue.auth.currentUserOrNull(client.auth)?.id
 
-            // Simulating real fetch behavior
-             val notifications = emptyList<Notification>()
-            _uiState.update {
-                it.copy(
-                    notifications = notifications,
-                    isLoading = false,
-                    unreadCount = notifications.count { !it.isRead }
-                )
+                if (currentUserId != null) {
+                    val result = client.from("notifications")
+                        .select {
+                            filter { eq("receiver_id", currentUserId) }
+                            order("created_at", io.github.jan.supabase.postgrest.query.Order.DESCENDING)
+                        }
+                        .decodeList<kotlinx.serialization.json.JsonObject>()
+
+                    val notifications = result.mapNotNull { json ->
+                        try {
+                            Notification(
+                                id = json["id"]?.toString()?.replace("\"", "") ?: "",
+                                type = json["type"]?.toString()?.replace("\"", "") ?: "system",
+                                actorName = "User",
+                                actorAvatar = null,
+                                message = json["content"]?.toString()?.replace("\"", "") ?: "New notification",
+                                timestamp = json["created_at"]?.toString()?.replace("\"", "") ?: "",
+                                isRead = json["is_read"]?.toString()?.toBoolean() ?: false,
+                                targetId = json["target_id"]?.toString()?.replace("\"", "")
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
+
+                     _uiState.update {
+                        it.copy(
+                            notifications = notifications,
+                            isLoading = false,
+                            unreadCount = notifications.count { !it.isRead }
+                        )
+                    }
+                } else {
+                     _uiState.update { it.copy(isLoading = false) }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

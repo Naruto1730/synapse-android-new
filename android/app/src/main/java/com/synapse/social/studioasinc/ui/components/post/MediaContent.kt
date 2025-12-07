@@ -55,29 +55,46 @@ fun MediaContent(
             }
         }
     } else {
-        // Handle grid layout for multiple images
-        // For simplicity in this task, we can show a pager or just the first image with a count
-        // Implementing a simple grid for now or just a pager
-         // NOTE: A more complex grid layout can be implemented here.
-        val url = mediaUrls.first()
-        Box(
-             modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .clickable { onMediaClick(0) }
-        ) {
-             AsyncImage(
-                model = url,
-                contentDescription = "Post Image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(4f / 3f)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+        // Horizontal Pager for multiple images
+        val pagerState = androidx.compose.foundation.pager.rememberPagerState(pageCount = { mediaUrls.size })
+        Box(modifier = modifier.fillMaxWidth()) {
+            androidx.compose.foundation.pager.HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth()
+            ) { page ->
+                Box(
+                    modifier = Modifier
+                         .fillMaxWidth()
+                         .clickable { onMediaClick(page) }
+                         .padding(vertical = 8.dp)
+                ) {
+                    AsyncImage(
+                        model = mediaUrls[page],
+                        contentDescription = "Post Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(if (isVideo) 16f / 9f else 4f / 3f)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+
+            // Page Indicator
             if (mediaUrls.size > 1) {
-                // Show "+N" overlay
-                // This is a placeholder for the multi-image requirement
+                androidx.compose.material3.Text(
+                    text = "${pagerState.currentPage + 1}/${mediaUrls.size}",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                        .androidx.compose.foundation.background(
+                            color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f),
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    color = androidx.compose.ui.graphics.Color.White,
+                    style = MaterialTheme.typography.labelSmall
+                )
             }
         }
     }

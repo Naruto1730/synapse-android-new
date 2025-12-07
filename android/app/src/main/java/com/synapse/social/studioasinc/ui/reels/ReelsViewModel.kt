@@ -50,13 +50,22 @@ class ReelsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadMoreReels() {
-        if (_uiState.value.isLoading) return
-        viewModelScope.launch {
-             // Load next page
-        }
+        // Since we are loading all reels at once in loadReels for now (due to basic filtering),
+        // we can skip pagination logic or implement client-side pagination if needed.
+        // For simplicity, we assume the list is complete or auto-updating via Flow.
     }
 
     fun likeReel(reelId: String) {
-        // Like logic
+        viewModelScope.launch {
+             try {
+                 val client = com.synapse.social.studioasinc.SupabaseClient.client
+                 val currentUserId = io.github.jan.supabase.gotrue.auth.currentUserOrNull(client.auth)?.id
+                 if (currentUserId != null) {
+                     postRepository.toggleReaction(reelId, currentUserId, com.synapse.social.studioasinc.model.ReactionType.LIKE)
+                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }

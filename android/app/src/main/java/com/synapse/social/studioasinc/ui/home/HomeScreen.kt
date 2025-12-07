@@ -6,6 +6,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PlayCircle
@@ -37,7 +40,9 @@ import com.synapse.social.studioasinc.ui.navigation.HomeNavGraph
 @Composable
 fun HomeScreen(
     onNavigateToSearch: () -> Unit,
-    onNavigateToProfile: (String) -> Unit
+    onNavigateToProfile: (String) -> Unit,
+    onNavigateToInbox: () -> Unit,
+    onNavigateToCreatePost: () -> Unit
 ) {
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -46,16 +51,31 @@ fun HomeScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(text = "Synapse") }, // Or stringResource(R.string.app_name)
+                title = { Text(text = "Synapse") },
                 actions = {
+                    IconButton(onClick = onNavigateToCreatePost) {
+                         Icon(
+                            imageVector = Icons.Default.AddBox, // Or appropriate icon
+                            contentDescription = "Create Post"
+                        )
+                    }
                     IconButton(onClick = onNavigateToSearch) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search"
                         )
                     }
-                    IconButton(onClick = { /* Navigate to Notifications if not a tab, but here it is a tab */ }) {
-                        // Keep if top bar actions are needed, e.g. messages
+                    IconButton(onClick = onNavigateToInbox) {
+                        Icon(
+                             imageVector = Icons.AutoMirrored.Filled.Send, // Or Message icon
+                             contentDescription = "Inbox"
+                        )
+                    }
+                    IconButton(onClick = { onNavigateToProfile("me") }) { // Pass "me" or handle in HomeActivity to get current UID
+                        Icon(
+                             imageVector = Icons.Default.Person,
+                             contentDescription = "Profile"
+                        )
                     }
                 },
                 scrollBehavior = scrollBehavior

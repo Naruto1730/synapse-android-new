@@ -253,6 +253,20 @@ dependencies {
     // DataStore for preferences
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
 
+    // Paging Compose - Added explicitly as per reviewer
+    implementation "androidx.paging:paging-compose:3.3.6"
+
+    // Coil for Compose
+    implementation "io.coil-kt:coil-compose:2.7.0"
+
+    // Material Icons Extended
+    implementation "androidx.compose.material:material-icons-extended:1.7.5"
+
+    // Media3 for Video
+    implementation "androidx.media3:media3-exoplayer:1.3.1"
+    implementation "androidx.media3:media3-ui:1.3.1"
+    implementation "androidx.media3:media3-common:1.3.1"
+
     // Google Play services - Removed as not needed with Supabase
     // implementation 'com.google.android.gms:play-services-auth:21.4.0'
 
