@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.ui.navigation.HomeDestinations
 import com.synapse.social.studioasinc.ui.navigation.HomeNavGraph
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +48,25 @@ fun HomeScreen(
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
+    // Fetch user profile logic
+    val currentUser = com.synapse.social.studioasinc.SupabaseClient.client.auth.currentUserOrNull()
+    var userAvatarUrl by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        if (currentUser != null) {
+            try {
+                val result = com.synapse.social.studioasinc.SupabaseClient.client.from("users")
+                    .select(columns = io.github.jan.supabase.postgrest.query.Columns.raw("profile_image_url")) {
+                        filter { eq("uid", currentUser.id) }
+                    }.decodeSingleOrNull<kotlinx.serialization.json.JsonObject>()
+
+                userAvatarUrl = result?.get("profile_image_url")?.toString()?.replace("\"", "")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -55,7 +75,7 @@ fun HomeScreen(
                 actions = {
                     IconButton(onClick = onNavigateToCreatePost) {
                          Icon(
-                            imageVector = Icons.Default.AddBox, // Or appropriate icon
+                            imageVector = Icons.Default.AddBox,
                             contentDescription = "Create Post"
                         )
                     }
@@ -67,15 +87,26 @@ fun HomeScreen(
                     }
                     IconButton(onClick = onNavigateToInbox) {
                         Icon(
-                             imageVector = Icons.AutoMirrored.Filled.Send, // Or Message icon
+                             imageVector = Icons.AutoMirrored.Filled.Send,
                              contentDescription = "Inbox"
                         )
                     }
-                    IconButton(onClick = { onNavigateToProfile("me") }) { // Pass "me" or handle in HomeActivity to get current UID
-                        Icon(
-                             imageVector = Icons.Default.Person,
-                             contentDescription = "Profile"
-                        )
+                    // Profile Icon with Avatar
+                    if (userAvatarUrl != null) {
+                         com.synapse.social.studioasinc.ui.components.CircularAvatar(
+                             imageUrl = userAvatarUrl,
+                             contentDescription = "Profile",
+                             size = 32.dp,
+                             modifier = Modifier.padding(end = 12.dp),
+                             onClick = { onNavigateToProfile("me") }
+                         )
+                    } else {
+                        IconButton(onClick = { onNavigateToProfile("me") }) {
+                            Icon(
+                                 imageVector = Icons.Default.Person,
+                                 contentDescription = "Profile"
+                            )
+                        }
                     }
                 },
                 scrollBehavior = scrollBehavior

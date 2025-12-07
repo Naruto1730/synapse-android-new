@@ -2,6 +2,8 @@ package com.synapse.social.studioasinc.ui.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -102,7 +104,11 @@ fun FeedScreen(
                     item {
                          // Small retry button at bottom
                         val e = posts.loadState.append as LoadState.Error
-                        FeedError(message = "Error loading more", onRetry = { posts.retry() })
+                        FeedError(
+                            message = "Error loading more",
+                            onRetry = { posts.retry() },
+                            modifier = Modifier.fillMaxWidth().height(100.dp) // Restrict height for list footer
+                        )
                     }
                 }
             }

@@ -24,6 +24,7 @@ sealed class HomeDestinations(val route: String) {
 @Composable
 fun HomeNavGraph(
     navController: NavHostController,
+    onNavigateToProfile: (String) -> Unit,
     startDestination: String = HomeDestinations.Feed.route,
     modifier: Modifier = Modifier
 ) {
@@ -35,40 +36,32 @@ fun HomeNavGraph(
         composable(HomeDestinations.Feed.route) {
             FeedScreen(
                 onPostClick = { postId -> navController.navigate(HomeDestinations.PostDetail.createRoute(postId)) },
-                onUserClick = { userId -> navController.navigate(HomeDestinations.Profile.createRoute(userId)) },
-                onCommentClick = { postId -> navController.navigate(HomeDestinations.PostDetail.createRoute(postId)) }, // Typically opens detail with comments
-                onMediaClick = { /* Launch media viewer */ }
+                onUserClick = { userId -> onNavigateToProfile(userId) },
+                onCommentClick = { postId -> navController.navigate(HomeDestinations.PostDetail.createRoute(postId)) },
+                onMediaClick = { }
             )
         }
 
         composable(HomeDestinations.Reels.route) {
              ReelsScreen(
-                 onUserClick = { userId -> navController.navigate(HomeDestinations.Profile.createRoute(userId)) },
-                 onCommentClick = { /* Open comments */ }
+                 onUserClick = { userId -> onNavigateToProfile(userId) },
+                 onCommentClick = { }
              )
         }
 
         composable(HomeDestinations.Notifications.route) {
              NotificationsScreen(
-                 onNotificationClick = { notification ->
-                     // Handle navigation based on notification type
-                 },
-                 onUserClick = { userId -> navController.navigate(HomeDestinations.Profile.createRoute(userId)) }
+                 onNotificationClick = { notification -> },
+                 onUserClick = { userId -> onNavigateToProfile(userId) }
              )
         }
 
-        // Placeholders for destinations managed outside this graph or to be implemented
         composable(HomeDestinations.PostDetail.route) { backStackEntry ->
              val postId = backStackEntry.arguments?.getString("postId")
              com.synapse.social.studioasinc.ui.home.PostDetailScreen(
                  postId = postId,
                  onBackClick = { navController.popBackStack() }
              )
-        }
-
-        composable(HomeDestinations.Profile.route) { backStackEntry ->
-             // ProfileScreen is separate migration but we can log or show placeholder
-             // ProfileScreen(userId = backStackEntry.arguments?.getString("userId"))
         }
     }
 }
