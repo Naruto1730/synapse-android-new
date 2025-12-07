@@ -47,10 +47,16 @@ fun FeedScreen(
     val posts = viewModel.posts.collectAsLazyPagingItems()
 
     val pullRefreshState = rememberPullToRefreshState()
+
     if (pullRefreshState.isRefreshing) {
         LaunchedEffect(true) {
             posts.refresh()
             viewModel.refresh()
+        }
+    }
+
+    LaunchedEffect(posts.loadState.refresh) {
+        if (posts.loadState.refresh !is LoadState.Loading) {
             pullRefreshState.endRefresh()
         }
     }

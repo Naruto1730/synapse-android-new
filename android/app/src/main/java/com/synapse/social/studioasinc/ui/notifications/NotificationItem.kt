@@ -16,10 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.background
 import com.synapse.social.studioasinc.ui.components.CircularAvatar
 
 // Simple notification model for UI
-data class Notification(
+data class UiNotification(
     val id: String,
     val type: String, // like, comment, follow
     val actorName: String,
@@ -32,7 +33,7 @@ data class Notification(
 
 @Composable
 fun NotificationItem(
-    notification: Notification,
+    notification: UiNotification,
     onClick: () -> Unit,
     onUserClick: () -> Unit,
     modifier: Modifier = Modifier

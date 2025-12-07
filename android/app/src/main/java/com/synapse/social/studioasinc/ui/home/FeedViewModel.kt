@@ -112,7 +112,14 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
             mediaUrls = mediaUrls,
             isVideo = post.postType == "VIDEO",
             pollQuestion = post.pollQuestion,
-            pollOptions = post.pollOptions
+            pollOptions = post.pollOptions?.mapIndexed { index, option ->
+                com.synapse.social.studioasinc.ui.components.post.PollOption(
+                    id = index.toString(),
+                    text = option.text,
+                    voteCount = option.votes,
+                    isSelected = false // User vote tracking needed in Post model
+                )
+            }
         )
     }
 

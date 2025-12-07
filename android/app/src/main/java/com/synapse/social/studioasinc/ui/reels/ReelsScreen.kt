@@ -35,8 +35,10 @@ fun ReelsScreen(
         }
 
         // Load more when reaching end
-        if (page >= uiState.reels.size - 2) {
-             viewModel.loadMoreReels()
+        androidx.compose.runtime.LaunchedEffect(page) {
+            if (page >= uiState.reels.size - 2) {
+                 viewModel.loadMoreReels()
+            }
         }
     }
 }

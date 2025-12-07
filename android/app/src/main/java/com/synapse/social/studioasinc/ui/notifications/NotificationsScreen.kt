@@ -23,7 +23,7 @@ import com.synapse.social.studioasinc.ui.home.FeedLoading
 @Composable
 fun NotificationsScreen(
     viewModel: NotificationsViewModel = viewModel(),
-    onNotificationClick: (Notification) -> Unit,
+    onNotificationClick: (UiNotification) -> Unit,
     onUserClick: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()

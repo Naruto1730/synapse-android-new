@@ -2,6 +2,9 @@ package com.synapse.social.studioasinc.ui.notifications
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class NotificationsUiState(
-    val notifications: List<Notification> = emptyList(),
+    val notifications: List<UiNotification> = emptyList(),
     val isLoading: Boolean = false,
     val unreadCount: Int = 0
 )
@@ -35,13 +38,13 @@ class NotificationsViewModel : ViewModel() {
                     val result = client.from("notifications")
                         .select {
                             filter { eq("receiver_id", currentUserId) }
-                            order("created_at", io.github.jan.supabase.postgrest.query.Order.DESCENDING)
+                            order("created_at", Order.DESCENDING)
                         }
                         .decodeList<kotlinx.serialization.json.JsonObject>()
 
                     val notifications = result.mapNotNull { json ->
                         try {
-                            Notification(
+                            UiNotification(
                                 id = json["id"]?.toString()?.replace("\"", "") ?: "",
                                 type = json["type"]?.toString()?.replace("\"", "") ?: "system",
                                 actorName = "User",
