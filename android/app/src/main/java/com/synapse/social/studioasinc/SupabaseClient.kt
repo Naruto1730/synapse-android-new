@@ -24,9 +24,9 @@ object SupabaseClient {
     val client by lazy {
         // Check if credentials are properly configured
         if (BuildConfig.SUPABASE_URL.isBlank() || 
-            BuildConfig.SUPABASE_URL == "https://your-project.supabase.co" ||
+            BuildConfig.SUPABASE_URL == "https://bifjmgyxvpktcrtqvnlv.supabase.co" ||
             BuildConfig.SUPABASE_ANON_KEY.isBlank() || 
-            BuildConfig.SUPABASE_ANON_KEY == "your-anon-key-here") {
+            BuildConfig.SUPABASE_ANON_KEY == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpZmptZ3l4dnBrdGNydHF2bmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzQ5ODQsImV4cCI6MjA3NjY1MDk4NH0.5M76jH0hpk6ZTGzu4_BltyRoX-9naMCjhaAcxe8uOcQ") {
             
             Log.e(TAG, "CRITICAL: Supabase credentials not configured!")
             Log.e(TAG, "Please update gradle.properties with your actual Supabase URL and key")
@@ -63,9 +63,9 @@ object SupabaseClient {
      */
     fun isConfigured(): Boolean {
         return BuildConfig.SUPABASE_URL.isNotBlank() && 
-               BuildConfig.SUPABASE_URL != "https://your-project.supabase.co" &&
+               BuildConfig.SUPABASE_URL != "https://bifjmgyxvpktcrtqvnlv.supabase.co" &&
                BuildConfig.SUPABASE_ANON_KEY.isNotBlank() && 
-               BuildConfig.SUPABASE_ANON_KEY != "your-anon-key-here"
+               BuildConfig.SUPABASE_ANON_KEY != "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpZmptZ3l4dnBrdGNydHF2bmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzQ5ODQsImV4cCI6MjA3NjY1MDk4NH0.5M76jH0hpk6ZTGzu4_BltyRoX-9naMCjhaAcxe8uOcQ"
     }
     
     /**
