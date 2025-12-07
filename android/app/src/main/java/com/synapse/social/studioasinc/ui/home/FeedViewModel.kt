@@ -56,6 +56,28 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+    
+    fun reactToPost(post: Post, reactionLabel: String) {
+        viewModelScope.launch {
+            try {
+                val currentUserId = authRepository.getCurrentUserId()
+                if (currentUserId != null) {
+                    val reactionType = when (reactionLabel) {
+                        "Like" -> com.synapse.social.studioasinc.model.ReactionType.LIKE
+                        "Love" -> com.synapse.social.studioasinc.model.ReactionType.LOVE
+                        "Haha" -> com.synapse.social.studioasinc.model.ReactionType.HAHA
+                        "Wow" -> com.synapse.social.studioasinc.model.ReactionType.WOW
+                        "Sad" -> com.synapse.social.studioasinc.model.ReactionType.SAD
+                        "Angry" -> com.synapse.social.studioasinc.model.ReactionType.ANGRY
+                        else -> com.synapse.social.studioasinc.model.ReactionType.LIKE
+                    }
+                    postRepository.toggleReaction(post.id, currentUserId, reactionType)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun bookmarkPost(post: Post) {
         viewModelScope.launch {

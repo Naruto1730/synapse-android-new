@@ -41,6 +41,7 @@ fun PostCard(
     onMediaClick: (Int) -> Unit,
     onOptionsClick: () -> Unit,
     onPollVote: (String) -> Unit,
+    onReactionSelected: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -80,7 +81,8 @@ fun PostCard(
                 onLikeClick = onLikeClick,
                 onCommentClick = onCommentClick,
                 onShareClick = onShareClick,
-                onBookmarkClick = onBookmarkClick
+                onBookmarkClick = onBookmarkClick,
+                onReactionSelected = onReactionSelected
             )
 
             // Comment Preview Section (Task 2.6) - simplified integration

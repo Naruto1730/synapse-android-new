@@ -1,5 +1,8 @@
 package com.synapse.social.studioasinc.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -55,7 +58,10 @@ fun HomeScreen(
     onNavigateToCreatePost: () -> Unit
 ) {
     val navController = rememberNavController()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    
+    // Control bottom nav visibility based on scroll
+    val isBottomBarVisible = scrollBehavior.state.collapsedFraction < 0.5f
 
     // Fetch user profile logic
     val currentUser = com.synapse.social.studioasinc.SupabaseClient.client.auth.currentUserOrNull()
@@ -124,7 +130,12 @@ fun HomeScreen(
             )
         },
         bottomBar = {
-            NavigationBar {
+            AnimatedVisibility(
+                visible = isBottomBarVisible,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                NavigationBar {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
@@ -196,6 +207,7 @@ fun HomeScreen(
                 )
             }
         }
+    }
     ) { innerPadding ->
         HomeNavGraph(
             navController = navController,

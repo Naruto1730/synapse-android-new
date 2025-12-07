@@ -1,5 +1,7 @@
 package com.synapse.social.studioasinc.ui.components.post
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,11 +21,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostInteractionBar(
     isLiked: Boolean,
@@ -34,8 +41,10 @@ fun PostInteractionBar(
     onCommentClick: () -> Unit,
     onShareClick: () -> Unit,
     onBookmarkClick: () -> Unit,
+    onReactionSelected: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
+    var showReactionPicker by remember { mutableStateOf(false) }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -44,13 +53,18 @@ fun PostInteractionBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onLikeClick) {
-                Icon(
-                    imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = if (isLiked) "Unlike" else "Like",
-                    tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Icon(
+                imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = if (isLiked) "Unlike" else "Like",
+                tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(12.dp)
+                    .combinedClickable(
+                        onClick = onLikeClick,
+                        onLongClick = { if (onReactionSelected != null) showReactionPicker = true }
+                    )
+            )
             if (likeCount > 0) {
                 Text(
                     text = formatCount(likeCount),
@@ -94,6 +108,16 @@ fun PostInteractionBar(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+    
+    if (showReactionPicker && onReactionSelected != null) {
+        ReactionPicker(
+            onReactionSelected = { reaction ->
+                onReactionSelected(reaction)
+                showReactionPicker = false
+            },
+            onDismiss = { showReactionPicker = false }
+        )
     }
 }
 
