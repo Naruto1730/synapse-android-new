@@ -89,11 +89,11 @@ fun MediaContent(
                         .padding(16.dp)
                         .androidx.compose.foundation.background(
                             color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     color = androidx.compose.ui.graphics.Color.White,
-                    style = MaterialTheme.typography.labelSmall
+                    style = androidx.compose.material3.MaterialTheme.typography.labelSmall
                 )
             }
         }

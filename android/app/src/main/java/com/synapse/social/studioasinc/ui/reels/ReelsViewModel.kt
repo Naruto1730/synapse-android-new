@@ -60,7 +60,7 @@ class ReelsViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
              try {
                  val client = com.synapse.social.studioasinc.SupabaseClient.client
-                 val currentUserId = io.github.jan.supabase.gotrue.auth.currentUserOrNull(client.auth)?.id
+                 val currentUserId = client.auth.currentUserOrNull()?.id as? String
                  if (currentUserId != null) {
                      postRepository.toggleReaction(reelId, currentUserId, com.synapse.social.studioasinc.model.ReactionType.LIKE)
                  }

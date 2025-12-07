@@ -12,6 +12,7 @@ import com.synapse.social.studioasinc.model.Post
 import com.synapse.social.studioasinc.home.User
 import com.synapse.social.studioasinc.ui.components.post.PostCardState
 import com.synapse.social.studioasinc.util.ScrollPositionState
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

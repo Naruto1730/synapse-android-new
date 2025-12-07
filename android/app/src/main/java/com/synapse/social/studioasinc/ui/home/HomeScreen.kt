@@ -1,6 +1,11 @@
 package com.synapse.social.studioasinc.ui.home
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
@@ -36,6 +41,9 @@ import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.ui.navigation.HomeDestinations
 import com.synapse.social.studioasinc.ui.navigation.HomeNavGraph
 import androidx.compose.ui.unit.dp
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import kotlinx.serialization.json.JsonObject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,15 +58,17 @@ fun HomeScreen(
 
     // Fetch user profile logic
     val currentUser = com.synapse.social.studioasinc.SupabaseClient.client.auth.currentUserOrNull()
-    var userAvatarUrl by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+    var userAvatarUrl by remember { mutableStateOf<String?>(null) }
 
-    androidx.compose.runtime.LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
         if (currentUser != null) {
             try {
                 val result = com.synapse.social.studioasinc.SupabaseClient.client.from("users")
-                    .select(columns = io.github.jan.supabase.postgrest.query.Columns.raw("profile_image_url")) {
-                        filter { eq("uid", currentUser.id) }
-                    }.decodeSingleOrNull<kotlinx.serialization.json.JsonObject>()
+                    .select(columns = Columns.raw("profile_image_url")) {
+                        filter {
+                            eq("uid", currentUser.id)
+                        }
+                    }.decodeSingleOrNull<JsonObject>()
 
                 userAvatarUrl = result?.get("profile_image_url")?.toString()?.replace("\"", "")
             } catch (e: Exception) {
@@ -188,6 +198,7 @@ fun HomeScreen(
     ) { innerPadding ->
         HomeNavGraph(
             navController = navController,
+            onNavigateToProfile = onNavigateToProfile,
             modifier = Modifier.padding(innerPadding)
         )
     }
