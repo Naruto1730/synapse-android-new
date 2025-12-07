@@ -195,6 +195,7 @@ dependencies {
     
     // Accompanist for system UI controller
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.32.0'
+    implementation 'com.google.accompanist:accompanist-swiperefresh:0.32.0'
 
     // Supabase BOM and dependencies
     implementation(platform("io.github.jan-tennert.supabase:bom:2.6.0"))

@@ -41,6 +41,7 @@ import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.ui.navigation.HomeDestinations
 import com.synapse.social.studioasinc.ui.navigation.HomeNavGraph
 import androidx.compose.ui.unit.dp
+import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.json.JsonObject
